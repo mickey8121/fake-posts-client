@@ -1,0 +1,8 @@
+android/
+ios/
+vendor/
+.yarn/
+coverage/
+docs/ai/logs/*.jsonl
+*.md
+docs/ai/harness/

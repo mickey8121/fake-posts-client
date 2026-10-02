@@ -1,0 +1,41 @@
+{
+  "description": "Core harness hooks. PreToolUse/Bash runs guard-bash.sh, which denies force pushes, recursive rm of /, ~, $HOME or the project directory, writes into .env files, git reset --hard over unstaged work, and remote fetches piped into a shell. It fails closed on an unreadable payload. PostToolUse/Edit|Write runs post-edit.sh, which runs the project's own make check-file (or make check) over the edited file and returns the failure to the model. SessionStart runs session-start.sh, which injects the branch, its drift from its upstream, the uncommitted count, the last three commit subjects, the make targets the project implements, and an unreadable settings file. Both of the latter two fail open on anything they cannot do confidently.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/session-start.sh\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/guard-bash.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/post-edit.sh\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}

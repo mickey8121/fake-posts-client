@@ -1,97 +1,115 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Fake Posts Client
 
-# Getting Started
+A small React Native app for iOS and Android: a list of posts from [JSONPlaceholder](https://jsonplaceholder.typicode.com), each enriched with a FakerJS image, with a details screen and favorites that float to the top of the list.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+Built as a test task with an AI-only workflow — see [AI workflow](#ai-workflow).
 
-## Step 1: Start Metro
+## Features
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+- **PostsScreen** — the list of posts with a 32×32 image; favorites are highlighted and listed first.
+- **DetailsScreen** — a single post with a 300×300 image and a button that adds it to or removes it from favorites.
+- **Fetch once** — the list and each post are requested a single time; images are generated a single time.
+- **Persistence** — posts, images and favorites survive an app restart; nothing is requested again.
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+## Requirements
 
-```sh
-# Using npm
-npm start
+- Node.js ≥ 22.11
+- Yarn through Corepack (ships with Node)
+- Ruby ≥ 2.6.10 with Bundler — for CocoaPods
+- Xcode with an iOS simulator — for iOS
+- Android SDK, JDK 17 and an emulator or device — for Android
 
-# OR using Yarn
-yarn start
-```
+The general environment setup is described in the [React Native guide](https://reactnative.dev/docs/set-up-your-environment).
 
-## Step 2: Build and run your app
+## Getting started
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
-npm run android
-
-# OR using Yarn
-yarn android
-```
-
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+Enable Corepack once per machine, so `yarn` resolves to the version pinned in `package.json`:
 
 ```sh
-bundle install
+corepack enable
 ```
 
-Then, and every time you update your native dependencies, run:
+Install:
 
 ```sh
-bundle exec pod install
+yarn install
 ```
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+Run:
 
 ```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
+yarn run:ios
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+```sh
+yarn run:android
+```
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+`run:ios` installs the CocoaPods dependencies and then builds and launches the app, so no separate pods step is needed.
 
-## Step 3: Modify your app
+## Scripts
 
-Now that you have successfully run the app, let's make changes!
+| Script | What it does |
+|---|---|
+| `yarn run:ios` | Installs pods, builds and launches the app on the iOS simulator |
+| `yarn run:android` | Builds and launches the app on an Android emulator or device |
+| `yarn start` | Starts the Metro bundler |
+| `yarn pods` | Installs the Ruby gems and CocoaPods dependencies |
+| `yarn typecheck` | Type-checks the project with `tsc` |
+| `yarn lint` | Runs ESLint |
+| `yarn test` | Runs the Jest tests |
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+## Stack
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+| Area | Choice |
+|---|---|
+| Framework | React Native 0.87 (bare, no Expo), TypeScript |
+| Navigation | React Navigation 7, native stack |
+| State | Redux Toolkit, `react-redux` |
+| Persistence | `redux-persist` over `react-native-mmkv` |
+| Network | `fetch` + `createAsyncThunk` |
+| Fake data | `@faker-js/faker` |
+| Tests | Jest |
+| Package manager | Yarn 3 (Corepack) |
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+### Why these choices
 
-## Congratulations! :tada:
+- **Redux Toolkit.** The spec requires a state manager, and the app's whole behavior is persisted client state: posts that are loaded once, and a set of favorites that reorders the list. RTK keeps that state normalized, and the list order is a memoized selector over it.
+- **Plain `fetch` instead of React Query.** React Query is a server-state cache built around staleness, refetching and invalidation. The spec asks for the opposite: request once, never update, survive restarts. That is persisted state, not a cache — using React Query would mean switching its core features off. Two endpoints do not need more than a thin `fetch` client and thunks.
+- **MMKV instead of AsyncStorage.** Synchronous and considerably faster, which keeps rehydration on startup short.
+- **Yarn.** It is the package manager the React Native template is set up for, so the project needs no extra configuration. The version is pinned in `package.json` and resolved by Corepack, so every machine installs with the same Yarn.
+- **React Navigation native stack.** Required by the spec; the native stack gives platform-native transitions and gestures.
 
-You've successfully run and modified your React Native App. :partying_face:
+## Architecture
 
-### Now what?
+The code follows [Feature-Sliced Design](https://feature-sliced.design): `src/` is split into layers, and a module may import only from the layers below it.
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+| Layer | Contents |
+|---|---|
+| `app` | Providers, store setup, navigation root |
+| `screens` | `PostsScreen`, `DetailsScreen` — the FSD `pages` layer |
+| `widgets` | Composed blocks, such as the post list |
+| `features` | User actions, such as toggling a favorite |
+| `entities` | The post: types, state, selectors, API, card |
+| `shared` | API client, storage, theme, UI kit |
 
-# Troubleshooting
+Slices of one layer do not import each other, and a slice is used only through its `index.ts`. This is what separates UI, logic and state: components live in `ui`, state and selectors in `model`, requests in `api`.
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+## Notes on the spec
 
-# Learn More
+- **`GET /posts/{id}` is redundant.** `GET /posts` already returns the full content of every post. The spec asks for the single-post endpoint explicitly, so the app calls it on the first open of a post and never again.
+- **Ordering.** JSONPlaceholder posts carry no timestamps, so the list is ordered by `id`: favorites first, then the rest.
+- **One image per post.** The thumbnail and the details image are the same picture at two resolutions.
 
-To learn more about React Native, take a look at the following resources:
+## Project docs
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+- [`docs/kickoff.md`](docs/kickoff.md) — decisions on the open points of the spec, stack, process, plan.
+- [`docs/tasks/`](docs/tasks) — one file per task, `TT-01` … `TT-07`.
+- [`docs/ai/logs/`](docs/ai/logs) — the AI sessions, per task: a short summary and a session log.
+- [`docs/ai/harness/`](docs/ai/harness) — the prompts, skills and rules used.
+
+## AI workflow
+
+The project was built with [Claude Code](https://claude.com/claude-code). Planning, setup, implementation and review were done by the agent, under human direction and review, using a personal harness of skills and hooks.
+
+The only manual step was creating the project: three commands — `corepack enable`, the React Native CLI `init`, and `git init` — produced in the planning session and run by hand.
