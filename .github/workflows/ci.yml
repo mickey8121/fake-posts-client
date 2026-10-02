@@ -1,0 +1,32 @@
+# This workflow calls `make`, never the tools behind it. The Makefile is the
+# contract the post-edit hook and /ship already read, so CI checking the same
+# way is what keeps them from disagreeing about what "checked" means. Change a
+# recipe in the Makefile, not a step here.
+
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - run: corepack enable
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '>= 22.11.0'
+          cache: yarn
+
+      - run: yarn install --immutable
+
+      # Delete a step whose target the Makefile does not define — a step that
+      # runs a missing target fails the build for a target nobody promised.
+      - run: make check
+
+      - run: make test
