@@ -8,8 +8,8 @@ const initialState: PostsState = postsAdapter.getInitialState({
   detailRequestedIds: [],
 });
 
-const keepImages = (state: PostsState, post: Post): Post => {
-  const existing = state.entities[post.id];
+const keepImages = (entities: PostsState['entities'], post: Post): Post => {
+  const existing = entities[post.id];
   return existing
     ? {
         ...post,
@@ -28,12 +28,12 @@ const postSlice = createSlice({
       .addCase(loadPosts.fulfilled, (state, { payload }) => {
         postsAdapter.upsertMany(
           state,
-          payload.map(post => keepImages(state as PostsState, post)),
+          payload.map(post => keepImages(state.entities, post)),
         );
         state.listRequested = true;
       })
       .addCase(loadPost.fulfilled, (state, { payload }) => {
-        postsAdapter.upsertOne(state, keepImages(state as PostsState, payload));
+        postsAdapter.upsertOne(state, keepImages(state.entities, payload));
         if (!state.detailRequestedIds.includes(payload.id)) {
           state.detailRequestedIds.push(payload.id);
         }

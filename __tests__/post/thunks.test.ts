@@ -40,6 +40,8 @@ beforeEach(() => {
   globalThis.fetch = mockFetch as unknown as typeof fetch;
 });
 
+const pictureSeed = (url: string) => url.split('/seed/')[1].split('/')[0];
+
 describe('loadPosts', () => {
   it('loads and enriches the list once', async () => {
     const store = newStore();
@@ -56,6 +58,20 @@ describe('loadPosts', () => {
       thumbnailUrl: expect.stringMatching(/\/32\/32$/),
       imageUrl: expect.stringMatching(/\/300\/300$/),
     });
+  });
+
+  it('gives each post one picture at both sizes, stable per post', async () => {
+    respondWith([dto(1), dto(2)]);
+    const first = newStore();
+    await first.dispatch(loadPosts());
+    respondWith([dto(1), dto(2)]);
+    const second = newStore();
+    await second.dispatch(loadPosts());
+
+    const [one, two] = [1, 2].map(id => selectPostById(first.getState(), id)!);
+    expect(pictureSeed(one.thumbnailUrl)).toBe(pictureSeed(one.imageUrl));
+    expect(pictureSeed(one.imageUrl)).not.toBe(pictureSeed(two.imageUrl));
+    expect(selectPostById(second.getState(), 1)).toEqual(one);
   });
 
   it('skips a duplicate dispatch while the request is in flight', async () => {
