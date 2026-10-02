@@ -1,6 +1,7 @@
 import {
   favoritesReducer,
-  postsLoaded,
+  loadPosts,
+  postRequestsReducer,
   postsReducer,
   selectDetailRequested,
   selectIsFavorite,
@@ -11,11 +12,15 @@ import {
 import { makePost } from '../../__fixtures__/post';
 
 const buildState = (ids: number[], favorites: number[]): PostRootState => ({
-  posts: postsReducer(undefined, postsLoaded(ids.map(makePost))),
+  posts: postsReducer(
+    undefined,
+    loadPosts.fulfilled(ids.map(makePost), 'request'),
+  ),
   favorites: favorites.reduce(
     (state, id) => favoritesReducer(state, toggleFavorite(id)),
     favoritesReducer(undefined, { type: '@@init' }),
   ),
+  postRequests: postRequestsReducer(undefined, { type: '@@init' }),
 });
 
 const sortedIds = (state: PostRootState) =>

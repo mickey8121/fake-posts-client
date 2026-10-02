@@ -1,8 +1,8 @@
 import { createMMKV } from 'react-native-mmkv';
 import { createAppStore } from '@app/store';
 import {
-  postLoaded,
-  postsLoaded,
+  loadPost,
+  loadPosts,
   selectSortedPosts,
   toggleFavorite,
 } from '@entities/post';
@@ -26,8 +26,10 @@ describe('persistence', () => {
     const storage = createMmkvStorage(createMMKV({ id: 'persistence-test' }));
 
     const first = await rehydrate(storage);
-    first.store.dispatch(postsLoaded([makePost(2), makePost(1)]));
-    first.store.dispatch(postLoaded(makePost(3)));
+    first.store.dispatch(
+      loadPosts.fulfilled([makePost(2), makePost(1)], 'request'),
+    );
+    first.store.dispatch(loadPost.fulfilled(makePost(3), 'request', 3));
     first.store.dispatch(toggleFavorite(2));
     await first.persistor.flush();
 
@@ -38,5 +40,20 @@ describe('persistence', () => {
     expect(state.posts.listRequested).toBe(true);
     expect(state.posts.detailRequestedIds).toEqual([3]);
     expect(selectSortedPosts(state).map(post => post.id)).toEqual([2, 1, 3]);
+  });
+
+  it('does not persist request status', async () => {
+    const storage = createMmkvStorage(createMMKV({ id: 'status-test' }));
+
+    const first = await rehydrate(storage);
+    first.store.dispatch(loadPosts.rejected(new Error('boom'), 'request'));
+    await first.persistor.flush();
+    expect(first.store.getState().postRequests.list.status).toBe('failed');
+
+    const second = await rehydrate(storage);
+    expect(second.store.getState().postRequests.list).toEqual({
+      status: 'idle',
+      error: null,
+    });
   });
 });

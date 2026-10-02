@@ -1,7 +1,7 @@
 import {
   favoritesReducer,
-  postLoaded,
-  postsLoaded,
+  loadPost,
+  loadPosts,
   postsReducer,
   toggleFavorite,
 } from '@entities/post';
@@ -41,7 +41,7 @@ describe('postsReducer', () => {
   it('normalizes the list by id and marks it requested', () => {
     const state = postsReducer(
       initial,
-      postsLoaded([makePost(2), makePost(1)]),
+      loadPosts.fulfilled([makePost(2), makePost(1)], 'request'),
     );
     expect(state.ids).toEqual([2, 1]);
     expect(state.entities[1]).toEqual(makePost(1));
@@ -49,10 +49,43 @@ describe('postsReducer', () => {
   });
 
   it('records a loaded detail once', () => {
-    const once = postsReducer(initial, postLoaded(makePost(4)));
-    const twice = postsReducer(once, postLoaded(makePost(4)));
+    const once = postsReducer(
+      initial,
+      loadPost.fulfilled(makePost(4), 'request', 4),
+    );
+    const twice = postsReducer(
+      once,
+      loadPost.fulfilled(makePost(4), 'request', 4),
+    );
     expect(twice.detailRequestedIds).toEqual([4]);
     expect(twice.ids).toEqual([4]);
     expect(twice.listRequested).toBe(false);
+  });
+
+  it('keeps the image urls already in the cache', () => {
+    const original = makePost(1);
+    const fromList = postsReducer(
+      initial,
+      loadPosts.fulfilled([original], 'request'),
+    );
+    const refreshed = {
+      ...original,
+      title: 'new title',
+      thumbnailUrl: 'https://example.test/other/32',
+      imageUrl: 'https://example.test/other/300',
+    };
+
+    const fromDetail = postsReducer(
+      fromList,
+      loadPost.fulfilled(refreshed, 'request', 1),
+    );
+    const fromRelist = postsReducer(
+      fromDetail,
+      loadPosts.fulfilled([refreshed], 'request'),
+    );
+
+    [fromDetail, fromRelist].forEach(state => {
+      expect(state.entities[1]).toEqual({ ...original, title: 'new title' });
+    });
   });
 });
