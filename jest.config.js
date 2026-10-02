@@ -4,6 +4,7 @@ const esmPackages = [
   '@faker-js/faker',
   '(jest-)?react-native',
   '@react-native(-community)?',
+  '@react-navigation/.*',
   '@reduxjs/toolkit',
   'immer',
   'react-native-mmkv',

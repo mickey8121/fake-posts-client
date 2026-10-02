@@ -119,6 +119,8 @@ Redux Toolkit; no React Query.
 
 - **Tokens** (palette, spacing, shadows) live in `shared/theme`; components use tokens, not
   raw color or spacing literals.
+- **Shadows:** use the `boxShadow` style prop through the shadow tokens in `shared/theme`; no
+  `shadow*` / `elevation` props and no `Platform.OS` branches. The blur needs Android API 28+.
 
 ## Testing
 
@@ -136,8 +138,8 @@ Empty — greenfield mode: there was no tree to survey, so nothing was found and
 - **Services** — dimension: services and side effects. No analytics, crash-reporting or
   remote-config SDK is declared. Settled when one is added.
 - **Platform branches and permissions** — dimension: platform and native. No
-  `Platform.OS` code, no permissions, no `patches/`. Settled by the first platform-specific
-  code (likely the card / button shadows).
+  `Platform.OS` code, no permissions, no `patches/`. Shadows are settled (`boxShadow`, see
+  Styling); the rest is settled by the first platform-specific code or permission.
 - **Lists, memoization, images** — dimension: performance. No list, animation or image
   library is declared; `FlatList` and `Image` from core are the only candidates. Settled by
   the posts list in TT-05.
