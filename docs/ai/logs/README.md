@@ -10,3 +10,4 @@ The Claude Code sessions behind this project, per task:
 | [00-kickoff](00-kickoff.md) | — | — | — |
 | [TT-01-project-setup](TT-01-project-setup.md) | — | [TT-01](../../tasks/TT-01-project-setup.md) | [#1](https://github.com/mickey8121/fake-posts-client/pull/1) |
 | [TT-02-store-and-persistence](TT-02-store-and-persistence.md) | [jsonl](TT-02-store-and-persistence.jsonl) | [TT-02](../../tasks/TT-02-store-and-persistence.md) | [#2](https://github.com/mickey8121/fake-posts-client/pull/2) |
+| [TT-03-api-and-faker](TT-03-api-and-faker.md) | [jsonl](TT-03-api-and-faker.jsonl) | [TT-03](../../tasks/TT-03-api-and-faker.md) | [#3](https://github.com/mickey8121/fake-posts-client/pull/3) |
