@@ -1,6 +1,6 @@
 # TT-02: Store and persistence
 
-Status: In progress
+Status: Done
 
 ## Goal
 

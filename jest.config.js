@@ -1,6 +1,7 @@
 const preset = require('@react-native/jest-preset/jest-preset');
 
 const esmPackages = [
+  '@faker-js/faker',
   '(jest-)?react-native',
   '@react-native(-community)?',
   '@reduxjs/toolkit',

@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { sortPosts } from '../lib/sortPosts';
-import { postsAdapter } from './postSlice';
-import type { PostRootState } from './types';
+import { postsAdapter } from './postAdapter';
+import type { PostRootState, RequestState } from './types';
 
 const postSelectors = postsAdapter.getSelectors(
   (state: PostRootState) => state.posts,
@@ -25,3 +25,11 @@ export const selectSortedPosts = createSelector(
   [selectAllPosts, selectFavoriteIds],
   sortPosts,
 );
+
+const idleRequest: RequestState = { status: 'idle', error: null };
+
+export const selectListRequest = (state: PostRootState) =>
+  state.postRequests.list;
+
+export const selectPostRequest = (state: PostRootState, id: number) =>
+  state.postRequests.details[id] ?? idleRequest;

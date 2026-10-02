@@ -1,12 +1,22 @@
-export type { Post, PostRootState } from './model/types';
-export { postsReducer, postsLoaded, postLoaded } from './model/postSlice';
+export type {
+  Post,
+  PostRequestsState,
+  PostRootState,
+  RequestState,
+  RequestStatus,
+} from './model/types';
+export { postsReducer } from './model/postSlice';
+export { postRequestsReducer } from './model/postRequestsSlice';
 export { favoritesReducer, toggleFavorite } from './model/favoritesSlice';
+export { loadPost, loadPosts } from './model/thunks';
 export {
   selectAllPosts,
   selectDetailRequested,
   selectFavoriteIds,
   selectIsFavorite,
+  selectListRequest,
   selectListRequested,
   selectPostById,
+  selectPostRequest,
   selectSortedPosts,
 } from './model/selectors';

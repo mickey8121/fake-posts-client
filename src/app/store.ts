@@ -9,12 +9,17 @@ import {
   REGISTER,
   REHYDRATE,
 } from 'redux-persist';
-import { favoritesReducer, postsReducer } from '@entities/post';
+import {
+  favoritesReducer,
+  postRequestsReducer,
+  postsReducer,
+} from '@entities/post';
 import { mmkvStorage, type PersistStorage } from '@shared/storage';
 
 const rootReducer = combineReducers({
   posts: postsReducer,
   favorites: favoritesReducer,
+  postRequests: postRequestsReducer,
 });
 
 export const createAppStore = (storage: PersistStorage) => {

@@ -16,7 +16,20 @@ export type PostsState = EntityState<Post, number> & {
 
 export type FavoritesState = number[];
 
+export type RequestStatus = 'idle' | 'pending' | 'succeeded' | 'failed';
+
+export type RequestState = {
+  status: RequestStatus;
+  error: string | null;
+};
+
+export type PostRequestsState = {
+  list: RequestState;
+  details: Record<number, RequestState>;
+};
+
 export type PostRootState = {
   posts: PostsState;
   favorites: FavoritesState;
+  postRequests: PostRequestsState;
 };
