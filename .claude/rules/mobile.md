@@ -122,6 +122,21 @@ Redux Toolkit; no React Query.
 - **Shadows:** use the `boxShadow` style prop through the shadow tokens in `shared/theme`; no
   `shadow*` / `elevation` props and no `Platform.OS` branches. The blur needs Android API 28+.
 
+## Lists and images
+
+- **Lists are `FlatList`** from core; no list library. Every list sets `keyExtractor`, a memoized
+  `renderItem`, and `getItemLayout` when its rows have a fixed height.
+- **Rows have a fixed height.** Row text is truncated (`numberOfLines`) rather than allowed to
+  grow, and the height is exported from the row's slice (`POST_CARD_HEIGHT`) so the list derives
+  `getItemLayout` from it.
+- **Row components are `React.memo`** and take plain props (`isFavorite`, an id-based `onPress`).
+  The list owns store reads; the row never selects from the store itself.
+- **Callbacks passed to rows are stable** (`useCallback`), and `extraData` carries any state a row
+  depends on that is not in `data`.
+- **Images go through `shared/ui/RemoteImage`**, never a bare `Image` of a remote uri. It owns the
+  loading shimmer and the error label, and takes its size from props.
+- **Animation uses core `Animated` with the native driver**; no animation library.
+
 ## Testing
 
 - Jest. **Logic only:** reducers, selectors and pure helpers (e.g. favorites-first sorting).
@@ -140,8 +155,5 @@ Empty — greenfield mode: there was no tree to survey, so nothing was found and
 - **Platform branches and permissions** — dimension: platform and native. No
   `Platform.OS` code, no permissions, no `patches/`. Shadows are settled (`boxShadow`, see
   Styling); the rest is settled by the first platform-specific code or permission.
-- **Lists, memoization, images** — dimension: performance. No list, animation or image
-  library is declared; `FlatList` and `Image` from core are the only candidates. Settled by
-  the posts list in TT-05.
 - **Assets** — dimension: assets. No svg pipeline, no fonts, no local assets; post images
   are remote (faker URLs). Settled when the first local asset lands.
