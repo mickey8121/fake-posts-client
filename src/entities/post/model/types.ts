@@ -28,6 +28,10 @@ export type PostRequestsState = {
   details: Record<number, RequestState>;
 };
 
+export type ListView = 'loading' | 'error' | 'ready';
+
+export type DetailView = 'loading' | 'error' | 'ready';
+
 export type PostRootState = {
   posts: PostsState;
   favorites: FavoritesState;

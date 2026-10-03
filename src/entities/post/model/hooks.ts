@@ -74,7 +74,7 @@ export const usePost = (id: number) => {
 export const useIsFavorite = (id: number) =>
   usePostSelector(state => selectIsFavorite(state, id));
 
-export const useFavoriteToggle = (id: number) => {
+export const useToggleFavorite = (id: number) => {
   const dispatch = usePostDispatch();
 
   return useCallback(() => {

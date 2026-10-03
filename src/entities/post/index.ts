@@ -1,4 +1,6 @@
 export type {
+  DetailView,
+  ListView,
   Post,
   PostRequestsState,
   PostRootState,
@@ -9,15 +11,15 @@ export { postsReducer } from './model/postSlice';
 export { postRequestsReducer } from './model/postRequestsSlice';
 export { favoritesReducer, toggleFavorite } from './model/favoritesSlice';
 export {
-  useFavoriteToggle,
   useIsFavorite,
   usePost,
   usePostList,
+  useToggleFavorite,
 } from './model/hooks';
 export { loadPost, loadPosts } from './model/thunks';
 export { IMAGE_SIZE } from './lib/enrichPost';
-export { getDetailView, type DetailView } from './lib/getDetailView';
-export { getListView, type ListView } from './lib/getListView';
+export { getDetailView } from './lib/getDetailView';
+export { getListView } from './lib/getListView';
 export { PostCard, POST_CARD_HEIGHT } from './ui/PostCard';
 export {
   selectAllPosts,

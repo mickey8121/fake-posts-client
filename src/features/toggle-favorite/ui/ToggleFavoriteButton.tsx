@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { Pressable, StyleSheet, Text } from 'react-native';
+import { useIsFavorite, useToggleFavorite } from '@entities/post';
 import { colors, radii, shadows, spacing, typography } from '@shared/theme';
-import { useToggleFavorite } from '../model/useToggleFavorite';
 
 type ToggleFavoriteButtonProps = {
   postId: number;
@@ -9,7 +9,8 @@ type ToggleFavoriteButtonProps = {
 
 export const ToggleFavoriteButton = memo(
   ({ postId }: ToggleFavoriteButtonProps) => {
-    const { isFavorite, toggle } = useToggleFavorite(postId);
+    const isFavorite = useIsFavorite(postId);
+    const toggle = useToggleFavorite(postId);
 
     return (
       <Pressable
