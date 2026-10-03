@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -11,6 +11,7 @@ import {
   useNavigation,
   type StaticScreenProps,
 } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { IMAGE_SIZE, usePost } from '@entities/post';
 import { ToggleFavoriteButton } from '@features/toggle-favorite';
 import { colors, spacing, typography } from '@shared/theme';
@@ -22,6 +23,11 @@ export const DetailsScreen = ({ route }: DetailsScreenProps) => {
   const { postId } = route.params;
   const navigation = useNavigation();
   const { post, view, error, refetch } = usePost(postId);
+  const { bottom } = useSafeAreaInsets();
+  const contentStyle = useMemo(
+    () => [styles.content, { paddingBottom: spacing.lg + bottom }],
+    [bottom],
+  );
 
   useEffect(() => {
     if (view === 'error') {
@@ -46,7 +52,7 @@ export const DetailsScreen = ({ route }: DetailsScreenProps) => {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.content}>
+    <ScrollView contentContainerStyle={contentStyle}>
       <RemoteImage
         uri={post.imageUrl}
         width={IMAGE_SIZE}

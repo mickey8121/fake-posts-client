@@ -1,6 +1,4 @@
-import type { RequestState } from '../model/types';
-
-export type ListView = 'loading' | 'error' | 'ready';
+import type { ListView, RequestState } from '../model/types';
 
 export const getListView = (
   request: RequestState,

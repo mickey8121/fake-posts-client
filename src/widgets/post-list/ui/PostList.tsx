@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -6,6 +6,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   POST_CARD_HEIGHT,
   PostCard,
@@ -13,6 +14,7 @@ import {
   type Post,
 } from '@entities/post';
 import { colors, spacing } from '@shared/theme';
+import { PostListSeparator } from './PostListSeparator';
 
 const ITEM_LENGTH = POST_CARD_HEIGHT + spacing.sm;
 
@@ -22,6 +24,11 @@ type PostListProps = {
 
 export const PostList = ({ onPostPress }: PostListProps) => {
   const { posts, favoriteIds, view, error, refetch } = usePostList();
+  const { bottom } = useSafeAreaInsets();
+  const contentStyle = useMemo(
+    () => [styles.content, { paddingBottom: spacing.lg + bottom }],
+    [bottom],
+  );
 
   useEffect(() => {
     if (view === 'error') {
@@ -60,8 +67,8 @@ export const PostList = ({ onPostPress }: PostListProps) => {
       keyExtractor={keyExtractor}
       renderItem={renderItem}
       getItemLayout={getItemLayout}
-      ItemSeparatorComponent={Separator}
-      contentContainerStyle={styles.content}
+      ItemSeparatorComponent={PostListSeparator}
+      contentContainerStyle={contentStyle}
       initialNumToRender={10}
       windowSize={7}
     />
@@ -79,8 +86,6 @@ const getItemLayout = (
   index,
 });
 
-const Separator = () => <View style={styles.separator} />;
-
 const styles = StyleSheet.create({
   center: {
     flex: 1,
@@ -90,8 +95,5 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: spacing.lg,
-  },
-  separator: {
-    height: spacing.sm,
   },
 });

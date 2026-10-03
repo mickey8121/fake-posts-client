@@ -18,7 +18,7 @@ A small bare React Native app for iOS and Android. It lists posts from JSONPlace
 - `android/` — native Android project
 - `ios/` — native iOS project (CocoaPods; Ruby gems via `Gemfile`)
 - `docs/` — kickoff decisions (`kickoff.md`), per-task specs (`tasks/`), AI session logs and harness (`ai/`)
-- `src/` — not created yet; planned as Feature-Sliced Design layers (`app`, `screens`, `widgets`, `features`, `entities`, `shared`), see README
+- `src/` — Feature-Sliced Design layers: `app`, `screens`, `widgets`, `features`, `entities`, `shared`; see `.claude/rules/mobile.md`
 
 ## Commands
 

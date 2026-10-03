@@ -100,11 +100,14 @@ Slices of one layer do not import each other, and a slice is used only through i
 - **`GET /posts/{id}` is redundant.** `GET /posts` already returns the full content of every post. The spec asks for the single-post endpoint explicitly, so the app calls it on the first open of a post and never again.
 - **Ordering.** JSONPlaceholder posts carry no timestamps, so the list is ordered by `id`: favorites first, then the rest.
 - **One image per post.** The thumbnail and the details image are the same picture at two resolutions.
+- **Images after a restart.** The post is stored with its image URLs; the image bytes are cached by the native `Image` component, not by the app. After a restart the list and the URLs are always there, but showing an image offline depends on the platform's image cache.
 
 ## Project docs
 
 - [`docs/kickoff.md`](docs/kickoff.md) — decisions on the open points of the spec, stack, process, plan.
 - [`docs/tasks/`](docs/tasks) — one file per task, `TT-01` … `TT-07`.
+- [`docs/manual-pass.md`](docs/manual-pass.md) — the checklist for the manual run on iOS and Android.
+- [`docs/mobile-review.md`](docs/mobile-review.md) — the whole-app review against the performance, platform and convention rules: what was fixed and what was kept.
 - [`docs/ai/logs/`](docs/ai/logs) — the AI sessions, per task: a short summary and a session log.
 - [`docs/ai/harness/`](docs/ai/harness) — the prompts, skills and rules used.
 

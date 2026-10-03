@@ -1,6 +1,4 @@
-import type { RequestState } from '../model/types';
-
-export type DetailView = 'loading' | 'error' | 'ready';
+import type { DetailView, RequestState } from '../model/types';
 
 export const getDetailView = (
   request: RequestState,
