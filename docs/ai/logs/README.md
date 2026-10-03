@@ -13,3 +13,4 @@ The Claude Code sessions behind this project, per task:
 | [TT-03-api-and-faker](TT-03-api-and-faker.md) | [jsonl](TT-03-api-and-faker.jsonl) | [TT-03](../../tasks/TT-03-api-and-faker.md) | [#3](https://github.com/mickey8121/fake-posts-client/pull/3) |
 | [TT-04-navigation-and-theme](TT-04-navigation-and-theme.md) | [jsonl](TT-04-navigation-and-theme.jsonl) | [TT-04](../../tasks/TT-04-navigation-and-theme.md) | [#4](https://github.com/mickey8121/fake-posts-client/pull/4) |
 | [TT-05-posts-screen](TT-05-posts-screen.md) | [jsonl](TT-05-posts-screen.jsonl) | [TT-05](../../tasks/TT-05-posts-screen.md) | [#5](https://github.com/mickey8121/fake-posts-client/pull/5) |
+| [TT-06-details-screen](TT-06-details-screen.md) | [jsonl](TT-06-details-screen.jsonl) | [TT-06](../../tasks/TT-06-details-screen.md) | [#6](https://github.com/mickey8121/fake-posts-client/pull/6) |

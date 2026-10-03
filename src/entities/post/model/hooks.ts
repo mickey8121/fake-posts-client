@@ -1,13 +1,19 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { ThunkDispatch, UnknownAction } from '@reduxjs/toolkit';
+import { getDetailView } from '../lib/getDetailView';
 import { getListView } from '../lib/getListView';
+import { toggleFavorite } from './favoritesSlice';
 import {
+  selectDetailRequested,
   selectFavoriteIds,
+  selectIsFavorite,
   selectListRequest,
+  selectPostById,
+  selectPostRequest,
   selectSortedPosts,
 } from './selectors';
-import { loadPosts } from './thunks';
+import { loadPost, loadPosts } from './thunks';
 import type { PostRootState } from './types';
 
 const usePostDispatch =
@@ -39,4 +45,39 @@ export const usePostList = () => {
     error: request.error,
     refetch,
   };
+};
+
+export const usePost = (id: number) => {
+  const dispatch = usePostDispatch();
+  const post = usePostSelector(state => selectPostById(state, id));
+  const isRequested = usePostSelector(state =>
+    selectDetailRequested(state, id),
+  );
+  const request = usePostSelector(state => selectPostRequest(state, id));
+
+  const refetch = useCallback(() => {
+    dispatch(loadPost(id));
+  }, [dispatch, id]);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
+  return {
+    post,
+    view: getDetailView(request, isRequested),
+    error: request.error,
+    refetch,
+  };
+};
+
+export const useIsFavorite = (id: number) =>
+  usePostSelector(state => selectIsFavorite(state, id));
+
+export const useFavoriteToggle = (id: number) => {
+  const dispatch = usePostDispatch();
+
+  return useCallback(() => {
+    dispatch(toggleFavorite(id));
+  }, [dispatch, id]);
 };

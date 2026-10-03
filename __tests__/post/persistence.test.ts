@@ -56,4 +56,19 @@ describe('persistence', () => {
       error: null,
     });
   });
+
+  it('does not request a post again after a restart', async () => {
+    const mockFetch = jest.fn();
+    globalThis.fetch = mockFetch as unknown as typeof fetch;
+    const storage = createMmkvStorage(createMMKV({ id: 'restart-test' }));
+
+    const first = await rehydrate(storage);
+    first.store.dispatch(loadPost.fulfilled(makePost(3), 'request', 3));
+    await first.persistor.flush();
+
+    const second = await rehydrate(storage);
+    await second.store.dispatch(loadPost(3));
+
+    expect(mockFetch).not.toHaveBeenCalled();
+  });
 });
