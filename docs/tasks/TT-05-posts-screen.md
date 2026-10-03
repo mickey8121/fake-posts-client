@@ -1,6 +1,6 @@
 # TT-05: PostsScreen
 
-Status: In progress
+Status: Done
 
 ## Goal
 

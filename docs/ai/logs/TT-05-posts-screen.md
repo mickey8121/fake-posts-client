@@ -2,7 +2,7 @@
 
 Task: [`docs/tasks/TT-05-posts-screen.md`](../../tasks/TT-05-posts-screen.md) · PR: [#5](https://github.com/mickey8121/fake-posts-client/pull/5)
 
-Session log: [`TT-05-posts-screen.jsonl`](TT-05-posts-screen.jsonl) — exported when the PR was opened, so the hand-off after it is not in the log.
+Session log: [`TT-05-posts-screen.jsonl`](TT-05-posts-screen.jsonl) — exported as the last step before the merge, so the hand-off after it is not in the log.
 
 ## Prompts
 
