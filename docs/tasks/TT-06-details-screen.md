@@ -1,6 +1,6 @@
 # TT-06: DetailsScreen
 
-Status: Todo
+Status: Done
 
 ## Goal
 
